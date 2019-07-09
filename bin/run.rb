@@ -30,18 +30,26 @@ class CommandLineInterface
 
     def create_user
         user_login = @prompt.ask('What is your name?')
-        User.new(user_login)
+        current_user = User.new(user_login) 
         puts "Welcome to the party #{user_login}!"
-        menu_choices
+        menu_choices(current_user)
     end
 
-    def menu_choices
+    def menu_choices(current_user)
         @prompt.select("What would you like to do?") do |menu|
-            menu.choice 'create new schedule'
+            menu.choice 'create new schedule', -> scheduler
             menu.choice 'view an existing schedule'
             menu.choice 'update a schedule'
             menu.choice 'delete a schedule'
         end
+    end
+
+    def scheduler
+        @prompt.select("Who are you excited to see today?") do |menu|
+            menu.choice 'artist name, 12:00', -> Schedule.new(self.id, show.id)
+        #     menu.choice 'artist name, 12:00', -> schedules << Schedule.new(self.id, show.id)
+        #     menu.choice 'artist name, 12:00', -> schedules << Schedule.new(self.id, show.id)
+        # end
     end
 
 
