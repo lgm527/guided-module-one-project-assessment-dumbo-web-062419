@@ -26,7 +26,7 @@ class CommandLineInterface
     puts "
          +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+
          |B|A|M|C|H|E|L|L|A|R|O|O| |M|A|N|
-         +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+".colorize(:blue)
+         +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+".colorize(:blue).blink
 
 
     puts 'Welcome to Bamchellaroo Man!'
@@ -45,16 +45,17 @@ class CommandLineInterface
 
     def create_user
         user_login = @prompt.ask('What is your name?')
-        @current_user = User.new(name: "#{user_login}") 
+        @current_user = User.create(name: "#{user_login}")
         puts "Welcome to the party #{user_login}!"
         menu_choices(@current_user)
+
     end
 
     def menu_choices(current_user)
         binding.pry
         @prompt.select("What would you like to do?") do |menu|
-            menu.choice 'create new schedule', ->{ scheduler(current_user, set_time=1)}
-            menu.choice 'view an existing schedule', -> { view_schedule(current_user)}
+            menu.choice 'create new schedule', -> { scheduler(current_user) }
+            menu.choice 'view an existing schedule', -> { view_schedule(current_user) }
             menu.choice 'update a schedule'
             menu.choice 'delete a schedule'
         end
@@ -81,7 +82,6 @@ class CommandLineInterface
         chosen_headliner = Show.find_by(artist: headliner_choice)
         Schedule.create(user_id: current_user.id, show_id: chosen_headliner.id)
         view_schedule(current_user)
-    end
 
     def view_schedule(current_user)
         Schedule.where(user_id: current_user.id)
@@ -93,6 +93,9 @@ class CommandLineInterface
      to_be_removed = @prompt.select("Having second thoughts? Please select a show you would like to ditch:", show_choices)
      Schedule.remove(to_be_removed.id)
    end
+
+
+
 
 
 
