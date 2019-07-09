@@ -22,24 +22,25 @@ class CommandLineInterface
   end
 
   def greet_user
+
     puts "
          +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+
          |B|A|M|C|H|E|L|L|A|R|O|O| |M|A|N|
          +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+".colorize(:blue)
 
+
     puts 'Welcome to Bamchellaroo Man!'
     @prompt.select("Is this your first festival?") do |menu|
         menu.choice 'new user', -> { create_user }
-        menu.choice 'use existing'
+        menu.choice 'use existing', -> { select_existing_user }
         end
     end
 
     def select_existing_user
-        current_user = @prompt.select("Oh yeah! I remember you, what was your name again?") do |menu|
-            users.each do |user_name|
-                menu.choice User.all.name, -> menu_choices
-            end
-        end
+        choices = User.all.map{|user| user.name}
+        current = @prompt.select("Oh yeah! I remember you, what was your name again?", choices)
+        current_user = User.find_by(name: current)
+        menu_choices(current_user)
     end
 
     def create_user
@@ -51,22 +52,22 @@ class CommandLineInterface
 
     def menu_choices(current_user)
         @prompt.select("What would you like to do?") do |menu|
-            menu.choice 'create new schedule'
+            menu.choice 'create new schedule', ->{ scheduler(current_user)}
             menu.choice 'view an existing schedule'
             menu.choice 'update a schedule'
             menu.choice 'delete a schedule'
-            # binding.pry
         end
     end
 
-
-    # def scheduler
-    #     @prompt.select("Who are you excited to see today?") do |menu|
-    #         menu.choice 'artist name, 12:00', -> Schedule.new(self.id, show.id)
-    #     #     menu.choice 'artist name, 12:00', -> schedules << Schedule.new(self.id, show.id)
-    #     #     menu.choice 'artist name, 12:00', -> schedules << Schedule.new(self.id, show.id)
-    #     # end
-    # end
+    def scheduler(current_user)
+        set_time = 1
+        show_choices = Show.all.where(time: set_time)
+        artist_names = show_choices.map{|show| show.artist}
+        artist_choice = @prompt.select("Who are you excited to see today?", artist_names) 
+        chosen_show = Show.find_by(artist: artist_choice)
+        schedule1 = Schedule.new(user_id: current_user.id, show_id: chosen_show.id)
+        binding.pry
+    end
 
 
 
