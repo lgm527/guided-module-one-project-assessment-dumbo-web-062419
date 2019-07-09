@@ -73,13 +73,13 @@ class CommandLineInterface
         end
     end
 
-    def scheduler(current_user, set_time)
+    def scheduler(current_user)
         if set_time == 11
             pick_headliner(current_user)
         else
             show_choices = Show.all.where(time: set_time)
             artist_names = show_choices.map{|show| show.artist}
-            artist_choice = @prompt.select("Who are you excited to see today?", artist_names) 
+            artist_choice = @prompt.select("Who are you excited to see today?", artist_names)
             chosen_show = Show.find_by(artist: artist_choice)
             Schedule.create(user_id: current_user.id, show_id: chosen_show.id)
             set_time+=1
@@ -97,9 +97,17 @@ class CommandLineInterface
     end
 
     def view_schedule(current_user)
-        users_schedule = Schedule.where(user_id: current_user.id)
-        users_shows = Show.where(id: users_schedule.id)
-   end
+        show_ids = current_user.schedules.map { |sched| sched.show_id }
+        show_ids.each do |id|
+          Show.all.map do |show|
+            if show.id == id
+              puts "#{show.artist} at #{show.time}"
+              puts "------------------------------"
+            end
+          end
+        end
+
+    end
 
 
    def remove_schedule(current_user)
