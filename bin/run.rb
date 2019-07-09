@@ -52,6 +52,7 @@ class CommandLineInterface
     end
 
     def menu_choices(current_user)
+        binding.pry
         @prompt.select("What would you like to do?") do |menu|
             menu.choice 'create new schedule', -> { scheduler(current_user) }
             menu.choice 'view an existing schedule', -> { view_schedule(current_user) }
@@ -60,26 +61,38 @@ class CommandLineInterface
         end
     end
 
-    def scheduler(current_user)
-        set_time = 1
-        show_choices = Show.all.where(time: set_time)
-        artist_names = show_choices.map{|show| show.artist}
-        artist_choice = @prompt.select("Who are you excited to see today?", artist_names)
-        chosen_show = Show.find_by(artist: artist_choice)
-        schedule1 = Schedule.create(user_id: current_user.id, show_id: chosen_show.id)
-
+    def scheduler(current_user, set_time)
+        if set_time == 11
+            pick_headliner(current_user)
+        else
+            show_choices = Show.all.where(time: set_time)
+            artist_names = show_choices.map{|show| show.artist}
+            artist_choice = @prompt.select("Who are you excited to see today?", artist_names) 
+            chosen_show = Show.find_by(artist: artist_choice)
+            Schedule.create(user_id: current_user.id, show_id: chosen_show.id)
+            set_time+=1
+            scheduler(current_user, set_time)
+        end
     end
+
+    def pick_headliner(current_user)
+        main_choices = Show.all.where(time: 11)
+        headliner_names = main_choices.map{|show| show.artist}
+        headliner_choice = @prompt.select("Here's the main event! Who are you going to choose?", headliner_names)
+        chosen_headliner = Show.find_by(artist: headliner_choice)
+        Schedule.create(user_id: current_user.id, show_id: chosen_headliner.id)
+        view_schedule(current_user)
 
     def view_schedule(current_user)
-      Schedule.all.map { |sched| sched.user_id == current_user.id }
-    end
+        Schedule.where(user_id: current_user.id)
+   end
 
 
-    def remove_schedule(current_user)
-      show_choices = view_schedule(current_user)
-      to_be_removed = @prompt.select("Having second thoughts? Please select a show you would like to ditch:", show_choices)
-      Schedule.remove(to_be_removed.id)
-    end
+   def remove_schedule(current_user)
+     show_choices = view_schedule(current_user)
+     to_be_removed = @prompt.select("Having second thoughts? Please select a show you would like to ditch:", show_choices)
+     Schedule.remove(to_be_removed.id)
+   end
 
 
 
