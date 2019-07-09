@@ -8,4 +8,5 @@ gem "require_all"
 gem "faker"
 gem "tty-prompt"
 gem "colorize"
-gem 'catpix'
+gem "rmagick"
+gem "catpix"

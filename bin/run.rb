@@ -3,6 +3,7 @@ require 'pry'
 require 'json'
 require 'tty-prompt'
 require 'colorize'
+require 'rmagick'
 require 'catpix'
 
 
@@ -45,8 +46,8 @@ class CommandLineInterface
 
     puts 'Welcome to Bamchellaroo Man!'
     @prompt.select("Is this your first festival?") do |menu|
-        menu.choice 'new user', -> { create_user }
-        menu.choice 'use existing', -> { select_existing_user }
+        menu.choice 'yup, let me create a new user', -> { create_user }
+        menu.choice 'hell no, use my existing account', -> { select_existing_user }
         end
     end
 
@@ -59,7 +60,7 @@ class CommandLineInterface
 
     def create_user
         user_login = @prompt.ask('What is your name?')
-        @current_user = User.new(name: "#{user_login}") 
+        @current_user = User.new(name: "#{user_login}")
         puts "Welcome to the party #{user_login}!"
         menu_choices(@current_user)
     end
@@ -96,9 +97,13 @@ class CommandLineInterface
         view_schedule(current_user)
     end
 
+    def get_user_show_ids(current_user)
+      current_user.schedules.map { |sched| sched.show_id }
+    end
+
     def view_schedule(current_user)
-        show_ids = current_user.schedules.map { |sched| sched.show_id }
-        show_ids.each do |id|
+        puts "------------------------------"
+        get_user_show_ids(current_user).each do |id|
           Show.all.map do |show|
             if show.id == id
               puts "#{show.artist} at #{show.time}"
@@ -106,18 +111,30 @@ class CommandLineInterface
             end
           end
         end
-
     end
 
 
    def remove_schedule(current_user)
-     show_choices = view_schedule(current_user)
+     show_ids = get_user_show_ids(current_user)
+     show_choices = []
+     show_ids.each do |id|
+       Show.all.map do |show|
+         if show.id == id
+           show_choices << show.artist
+         end
+       end
+     end
      to_be_removed = @prompt.select("Having second thoughts? Please select a show you would like to ditch:", show_choices)
-     Schedule.remove(to_be_removed.id)
+     show_to_remove = Show.find_by(artist: to_be_removed)
+     Schedule.where(user_id: current_user, show_id: show_to_remove.id).destroy_all
    end
 
    def destroy_all_schedules
         Schedule.destroy_all
+   end
+
+   def update_schedule(current_user)
+
    end
 
 

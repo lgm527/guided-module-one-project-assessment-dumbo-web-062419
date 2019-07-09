@@ -79,6 +79,7 @@ DEPENDENCIES
   faker
   pry
   require_all
+  rmagick
   sinatra-activerecord
   sqlite3
   tty-prompt
