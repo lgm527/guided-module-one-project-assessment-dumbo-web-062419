@@ -2,6 +2,7 @@ require_relative '../config/environment'
 require 'pry'
 require 'json'
 require 'tty-prompt'
+require 'colorize'
 
 
 #Greeting
@@ -21,6 +22,13 @@ class CommandLineInterface
   end
 
   def greet_user
+
+    puts "
+         +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+
+         |B|A|M|C|H|E|L|L|A|R|O|O| |M|A|N|
+         +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+".colorize(:blue)
+
+
     puts 'Welcome to Bamchellaroo Man!'
     @prompt.select("Is this your first festival?") do |menu|
         menu.choice 'new user', -> { create_user }
