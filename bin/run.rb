@@ -3,6 +3,7 @@ require 'pry'
 require 'json'
 require 'tty-prompt'
 require 'colorize'
+require 'catpix'
 
 
 #Greeting
@@ -21,7 +22,20 @@ class CommandLineInterface
     @prompt = TTY::Prompt.new
   end
 
+  def print_image
+    Catpix::print_image "bin/Umphreys.jpg",
+  :limit_x => 1.0,
+  :limit_y => 0,
+  :center_x => true,
+  :center_y => true,
+  :bg => "white",
+  :bg_fill => true,
+  :resolution => "high"
+  end
+
   def greet_user
+
+    print_image
 
     puts "
          +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+
@@ -45,19 +59,17 @@ class CommandLineInterface
 
     def create_user
         user_login = @prompt.ask('What is your name?')
-        @current_user = User.create(name: "#{user_login}")
+        @current_user = User.new(name: "#{user_login}") 
         puts "Welcome to the party #{user_login}!"
         menu_choices(@current_user)
-
     end
 
     def menu_choices(current_user)
-        binding.pry
         @prompt.select("What would you like to do?") do |menu|
-            menu.choice 'create new schedule', -> { scheduler(current_user) }
-            menu.choice 'view an existing schedule', -> { view_schedule(current_user) }
+            menu.choice 'create new schedule', ->{ scheduler(current_user, set_time=1)}
+            menu.choice 'view an existing schedule', -> { view_schedule(current_user)}
             menu.choice 'update a schedule'
-            menu.choice 'delete a schedule'
+            menu.choice 'delete a schedule', -> { remove_schedule(current_user) }
         end
     end
 
@@ -82,9 +94,11 @@ class CommandLineInterface
         chosen_headliner = Show.find_by(artist: headliner_choice)
         Schedule.create(user_id: current_user.id, show_id: chosen_headliner.id)
         view_schedule(current_user)
+    end
 
     def view_schedule(current_user)
-        Schedule.where(user_id: current_user.id)
+        users_schedule = Schedule.where(user_id: current_user.id)
+        users_shows = Show.where(id: users_schedule.id)
    end
 
 
@@ -94,8 +108,9 @@ class CommandLineInterface
      Schedule.remove(to_be_removed.id)
    end
 
-
-
+   def destroy_all_schedules
+        Schedule.destroy_all
+   end
 
 
 
