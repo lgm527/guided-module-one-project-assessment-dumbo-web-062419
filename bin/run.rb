@@ -21,6 +21,11 @@ class CommandLineInterface
   end
 
   def greet_user
+    puts "
+         +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+
+         |B|A|M|C|H|E|L|L|A|R|O|O| |M|A|N|
+         +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+"
+
     puts 'Welcome to Bamchellaroo Man!'
     @prompt.select("Is this your first festival?") do |menu|
         menu.choice 'new user', -> { create_user }
@@ -43,8 +48,6 @@ class CommandLineInterface
             menu.choice 'delete a schedule'
         end
     end
-
-
 
 end
 

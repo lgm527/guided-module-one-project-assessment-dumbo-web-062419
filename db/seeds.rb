@@ -1,0 +1,126 @@
+require_relative "../config/environment"
+
+# Show.new(artist, time)
+# show.times = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+# show1 = Show.new("Grateful Dead", 12)
+# User.new(name)
+# Schedule.new(user, show)
+
+show_list = [
+  ["The Grateful Dead", 11],
+  ["Phish", 11],
+  ["The Allman Brothers Band", 11],
+  ["Widespread Panic", 11],
+  ["Dave Matthews Band", 11],
+  ["The String Cheese Incident", 11],
+  ["Gov't Mule", 10],
+  ["Jerry Garcia Band", 10],
+  ["moe", 10],
+  ["Yonder Mountain String Band", 10],
+  ["Blues Traveler/John Popper", 10],
+  ["Béla Fleck and the Flecktones", 10],
+  ["The Black Crowes", 10],
+  ["The Disco Biscuits", 9],
+  ["Umphrey's Mcgee", 9],
+  ["Phil Lesh & Friends", 9],
+  ["Ratdog", 9],
+  ["Keller Williams (Incident)", 9],
+  ["Sound Tribe Sector 9", 9],
+  ["The Spin Doctors", 9],
+  ["Medeski, Martin & Wood", 9],
+  ["Little Feat", 9],
+  ["Oysterhead", 9],
+  ["Trey Anastasio (Band/70 Volt Parade/GRAB)", 8],
+  ["Tedeschi Trucks Band", 8],
+  ["Galactic", 8],
+  ["Dickey Betts & Great Southern", 8],
+  ["Old Crow Medicine Show", 8],
+  ["G Love & Special Sauce", 8],
+  ["Les Claypool (& His Fancy Band/Fearless Flying Frog Brigade)", 8],
+  ["Lotus", 8],
+  ["Robert Randolph & The Family Band", 8],
+  ["New Riders of the Purple Sage", 8],
+  ["Leftover Salmon", 7],
+  ["My Morning Jacket", 7],
+  ["Bruce Hornsby", 7],
+  ["Ween", 7],
+  ["Tea Leaf Green", 7],
+  ["Primus", 7],
+  ["The Dirty Dozen Brass Band", 7],
+  ["Rusted Root", 7],
+  ["The Drive-by Truckers", 7],
+  ["Ben Folds Five", 7],
+  ["Victor Wooten", 6],
+  ["Ben Harper & The Innocent Criminals", 6],
+  ["Hot Tuna", 6],
+  ["The North Mississippi Allstars", 6],
+  ["Colonel Claypool's Bucket Of Bernie Brains", 6],
+  ["Benevento-Russo Duo (& Mike Gordon)", 6],
+  ["Man or Astroman?", 6],
+  ["Jack Johnson", 6],
+  ["Guster", 6],
+  ["Los Lonely Boys", 6],
+  ["Perpetual Groove", 5],
+  ["Paul Butterfield Blues Band", 5],
+  ["Steve Kimock Band", 5],
+  ["John Butler Trio", 5],
+  ["Railroad Earth", 5],
+  ["Blind Melon", 5],
+  ["Nickel Creek", 5],
+  ["Mike Gordon/Ramble Dove/Leo Kottke", 5],
+  ["Acoustic Syndicate", 5],
+  ["The Big Wu", 5],
+  ["Bernie Worrell and the WOO Warriors", 4],
+  ["The New Deal", 4],
+  ["Dispatch", 4],
+  ["Animal Liberation Orchestra", 4],
+  ["Garaj Mahal", 4],
+  ["Matisyahu", 4],
+  ["Pat McGee Band", 4],
+  ["Wishbone Ash", 4],
+  ["Particle", 4],
+  ["Aquarium Rescue Unit", 4],
+  ["New Monsoon", 3],
+  ["Alfred Howard & The K23 Orchestra", 3],
+  ["Hot Buttered Rum String Band", 3],
+  ["John Popper / John Popper Project feat", 3],
+  ["Fat Freddy's Drop", 3],
+  ["The Bad Plus", 3],
+  ["God Street Wine", 3],
+  ["Antibalas Afrobeat Orchestra", 3],
+  ["Addison Groove Project", 3],
+  ["Quicksilver Messenger Service", 3],
+  ["Robert Walter's 20th Congress", 2],
+  ["The Word", 2],
+  ["The Samples", 2],
+  ["RAQ", 2],
+  ["Signal Path", 2],
+  ["The Breakfast", 2],
+  ["MOFRO", 2],
+  ["Flowmotion", 2],
+  ["Donna The Buffalo", 2],
+  ["Moonshine Still", 1],
+  ["Assembly of Dust", 1],
+  ["Beanland", 1],
+  ["Tri Point Paradox", 1],
+  ["Zilla", 1],
+  ["Conspirator", 1],
+  ["Strangefolk", 1]
+]
+
+show_list.each do |artist, time|
+  Show.create( artist: artist, time: time )
+
+end
+
+user_list = [
+  "L",
+  "Dan",
+  "Ayana",
+  "Annie",
+  "Tony"
+]
+
+user_list.each do |name|
+  User.create( name: name )
+end
