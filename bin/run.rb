@@ -21,24 +21,18 @@ class CommandLineInterface
   end
 
   def greet_user
-    puts "
-         +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+
-         |B|A|M|C|H|E|L|L|A|R|O|O| |M|A|N|
-         +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+"
-
     puts 'Welcome to Bamchellaroo Man!'
     @prompt.select("Is this your first festival?") do |menu|
         menu.choice 'new user', -> { create_user }
-        menu.choice 'use existing'
+        menu.choice 'use existing', -> { select_existing_user }
         end
     end
 
     def select_existing_user
-        current_user = @prompt.select("Oh yeah! I remember you, what was your name again?") do |menu|
-            users.each do |user_name|
-                menu.choice User.all.name, -> menu_choices
-            end
-        end
+        choices = User.all.map {|user| user.name}
+        # binding.pry
+        current_user = @prompt.select("Oh yeah! I remember you, what was your name again?", choices) 
+        menu_choices(current_user)
     end
 
     def create_user
@@ -57,7 +51,6 @@ class CommandLineInterface
             # binding.pry
         end
     end
-
 
     # def scheduler
     #     @prompt.select("Who are you excited to see today?") do |menu|
