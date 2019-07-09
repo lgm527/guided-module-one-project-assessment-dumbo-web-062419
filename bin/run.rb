@@ -52,22 +52,21 @@ class CommandLineInterface
     end
 
     def menu_choices(current_user)
-        binding.pry
         @prompt.select("What would you like to do?") do |menu|
-            menu.choice 'create new schedule', -> { scheduler(current_user) }
+            menu.choice 'create new schedule', -> { scheduler(current_user, set_time=1) }
             menu.choice 'view an existing schedule', -> { view_schedule(current_user) }
-            menu.choice 'update a schedule'
+            menu.choice 'update a schedule', -> { remove_schedule(current_user) }
             menu.choice 'delete a schedule'
         end
     end
 
-    def scheduler(current_user, set_time)
+    def scheduler(current_user)
         if set_time == 11
             pick_headliner(current_user)
         else
             show_choices = Show.all.where(time: set_time)
             artist_names = show_choices.map{|show| show.artist}
-            artist_choice = @prompt.select("Who are you excited to see today?", artist_names) 
+            artist_choice = @prompt.select("Who are you excited to see today?", artist_names)
             chosen_show = Show.find_by(artist: artist_choice)
             Schedule.create(user_id: current_user.id, show_id: chosen_show.id)
             set_time+=1
@@ -82,10 +81,20 @@ class CommandLineInterface
         chosen_headliner = Show.find_by(artist: headliner_choice)
         Schedule.create(user_id: current_user.id, show_id: chosen_headliner.id)
         view_schedule(current_user)
+    end
 
     def view_schedule(current_user)
-        Schedule.where(user_id: current_user.id)
-   end
+        show_ids = current_user.schedules.map { |sched| sched.show_id }
+        show_ids.each do |id|
+          Show.all.map do |show|
+            if show.id == id
+              puts "#{show.artist} at #{show.time}"
+              puts "------------------------------"
+            end
+          end
+        end
+
+    end
 
 
    def remove_schedule(current_user)

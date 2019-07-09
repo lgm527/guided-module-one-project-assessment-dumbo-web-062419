@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
-  has_many :shows
-  has_many :schedules, through: :shows
+  has_many :schedules
+  has_many :shows, through: :schedules
 
   # def initialize(name, id=nil)
   #   @id = id
