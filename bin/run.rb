@@ -111,6 +111,13 @@ class CommandLineInterface
             end
           end
         end
+        @prompt.select('Would you like to return to the menu?') do |menu|
+            menu.choice 'Actually I changed my mind...', -> { menu_choices(current_user) }
+            menu.choice 'Looks great!'
+    
+        
+        end
+
     end
 
 
