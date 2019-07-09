@@ -16,7 +16,6 @@ require 'colorize'
 #New schedule gives a prompt to pick between artists playing at a certain time. Once you pick your artists for each conflicting time frame it creates a new schedule
 
 class CommandLineInterface
-
   def initialize
     @prompt = TTY::Prompt.new
   end
@@ -48,7 +47,10 @@ class CommandLineInterface
         @current_user = User.new(name: "#{user_login}") 
         puts "Welcome to the party #{user_login}!"
         menu_choices(@current_user)
+
     end
+  end
+
 
     def menu_choices(current_user)
         @prompt.select("What would you like to do?") do |menu|
@@ -68,6 +70,7 @@ class CommandLineInterface
         schedule1 = Schedule.new(user_id: current_user.id, show_id: chosen_show.id)
         binding.pry
     end
+
 
 
 
