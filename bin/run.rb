@@ -28,29 +28,38 @@ class CommandLineInterface
         end
     end
 
+    def select_existing_user
+        current_user = @prompt.select("Oh yeah! I remember you, what was your name again?") do |menu|
+            users.each do |user_name|
+                menu.choice User.all.name, -> menu_choices
+            end
+        end
+    end
+
     def create_user
         user_login = @prompt.ask('What is your name?')
-        current_user = User.new(user_login) 
+        @current_user = User.new(name: "#{user_login}") 
         puts "Welcome to the party #{user_login}!"
-        menu_choices(current_user)
+        menu_choices(@current_user)
     end
 
     def menu_choices(current_user)
         @prompt.select("What would you like to do?") do |menu|
-            menu.choice 'create new schedule', -> scheduler
+            menu.choice 'create new schedule'
             menu.choice 'view an existing schedule'
             menu.choice 'update a schedule'
             menu.choice 'delete a schedule'
+            # binding.pry
         end
     end
 
-    def scheduler
-        @prompt.select("Who are you excited to see today?") do |menu|
-            menu.choice 'artist name, 12:00', -> Schedule.new(self.id, show.id)
-        #     menu.choice 'artist name, 12:00', -> schedules << Schedule.new(self.id, show.id)
-        #     menu.choice 'artist name, 12:00', -> schedules << Schedule.new(self.id, show.id)
-        # end
-    end
+    # def scheduler
+    #     @prompt.select("Who are you excited to see today?") do |menu|
+    #         menu.choice 'artist name, 12:00', -> Schedule.new(self.id, show.id)
+    #     #     menu.choice 'artist name, 12:00', -> schedules << Schedule.new(self.id, show.id)
+    #     #     menu.choice 'artist name, 12:00', -> schedules << Schedule.new(self.id, show.id)
+    #     # end
+    # end
 
 
 
