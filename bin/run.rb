@@ -1,4 +1,7 @@
 require_relative '../config/environment'
+require 'pry'
+require 'json'
+require 'tty-prompt'
 
 
 #Greeting
@@ -17,7 +20,34 @@ class CommandLineInterface
     @prompt = TTY::Prompt.new
   end
 
+  def greet_user
+    puts 'Welcome to Bamchellaroo Man!'
+    @prompt.select("Is this your first festival?") do |menu|
+        menu.choice 'new user', -> { create_user }
+        menu.choice 'use existing'
+        end
+    end
+
+    def create_user
+        user_login = @prompt.ask('What is your name?')
+        User.new(user_login)
+        puts "Welcome to the party #{user_login}!"
+        menu_choices
+    end
+
+    def menu_choices
+        @prompt.select("What would you like to do?") do |menu|
+            menu.choice 'create new schedule'
+            menu.choice 'view an existing schedule'
+            menu.choice 'update a schedule'
+            menu.choice 'delete a schedule'
+        end
+    end
+
+
 
 end
 
+
 cli = CommandLineInterface.new
+cli.greet_user
