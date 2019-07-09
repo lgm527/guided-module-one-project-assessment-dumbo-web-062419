@@ -73,7 +73,7 @@ class CommandLineInterface
         end
     end
 
-    def scheduler(current_user)
+    def scheduler(current_user, set_time)
         if set_time == 11
             pick_headliner(current_user)
         else
