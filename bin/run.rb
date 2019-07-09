@@ -16,6 +16,7 @@ require 'colorize'
 #New schedule gives a prompt to pick between artists playing at a certain time. Once you pick your artists for each conflicting time frame it creates a new schedule
 
 class CommandLineInterface
+
   def initialize
     @prompt = TTY::Prompt.new
   end
@@ -25,7 +26,7 @@ class CommandLineInterface
     puts "
          +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+
          |B|A|M|C|H|E|L|L|A|R|O|O| |M|A|N|
-         +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+".colorize(:blue)
+         +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+".colorize(:blue).blink
 
 
     puts 'Welcome to Bamchellaroo Man!'
@@ -44,18 +45,16 @@ class CommandLineInterface
 
     def create_user
         user_login = @prompt.ask('What is your name?')
-        @current_user = User.new(name: "#{user_login}") 
+        @current_user = User.create(name: "#{user_login}")
         puts "Welcome to the party #{user_login}!"
         menu_choices(@current_user)
 
     end
-  end
-
 
     def menu_choices(current_user)
         @prompt.select("What would you like to do?") do |menu|
-            menu.choice 'create new schedule', ->{ scheduler(current_user)}
-            menu.choice 'view an existing schedule'
+            menu.choice 'create new schedule', -> { scheduler(current_user) }
+            menu.choice 'view an existing schedule', -> { view_schedule(current_user) }
             menu.choice 'update a schedule'
             menu.choice 'delete a schedule'
         end
@@ -65,11 +64,24 @@ class CommandLineInterface
         set_time = 1
         show_choices = Show.all.where(time: set_time)
         artist_names = show_choices.map{|show| show.artist}
-        artist_choice = @prompt.select("Who are you excited to see today?", artist_names) 
+        artist_choice = @prompt.select("Who are you excited to see today?", artist_names)
         chosen_show = Show.find_by(artist: artist_choice)
-        schedule1 = Schedule.new(user_id: current_user.id, show_id: chosen_show.id)
-        binding.pry
+        schedule1 = Schedule.create(user_id: current_user.id, show_id: chosen_show.id)
+
     end
+
+    def view_schedule(current_user)
+      Schedule.all.map { |sched| sched.user_id == current_user.id }
+    end
+
+
+    def remove_schedule(current_user)
+      show_choices = view_schedule(current_user)
+      to_be_removed = @prompt.select("Having second thoughts? Please select a show you would like to ditch:", show_choices)
+      Schedule.remove(to_be_removed.id)
+    end
+
+
 
 
 
