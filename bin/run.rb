@@ -130,7 +130,7 @@ class CommandLineInterface
    end
 
    def destroy_all_schedules
-        Schedule.destroy_all
+      Schedule.destroy_all
    end
 
    def update_schedule(current_user)
