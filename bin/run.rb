@@ -25,13 +25,13 @@ class CommandLineInterface
 
   def print_image
     Catpix::print_image "bin/Umphreys.jpg",
-  :limit_x => 1.0,
-  :limit_y => 0,
-  :center_x => true,
-  :center_y => true,
-  :bg => "white",
-  :bg_fill => true,
-  :resolution => "high"
+    :limit_x => 1.0,
+    :limit_y => 0,
+    :center_x => true,
+    :center_y => true,
+    :bg => "white",
+    :bg_fill => true,
+    :resolution => "high"
   end
 
   def greet_user
@@ -60,7 +60,7 @@ class CommandLineInterface
 
     def create_user
         user_login = @prompt.ask('What is your name?')
-        @current_user = User.new(name: "#{user_login}")
+        @current_user = User.create(name: "#{user_login}")
         puts "Welcome to the party #{user_login}!"
         menu_choices(@current_user)
     end
@@ -73,7 +73,7 @@ class CommandLineInterface
             menu.choice 'delete a schedule', -> { remove_schedule(current_user) }
         end
     end
-
+# add a "skip"
     def scheduler(current_user, set_time)
         if set_time == 11
             pick_headliner(current_user)
@@ -111,13 +111,10 @@ class CommandLineInterface
             end
           end
         end
-        @prompt.select('Would you like to return to the menu?') do |menu|
-            menu.choice 'Actually I changed my mind...', -> { menu_choices(current_user) }
-            menu.choice 'Looks great!'
-    
-        
+        @prompt.select("How is it lookin?") do |menu|
+            menu.choice "Actually, let me go back...".colorize(:blue), -> { menu_choices(current_user) }
+            menu.choice "Rock on!".colorize(:magenta), -> { print_image }
         end
-
     end
 
 
@@ -137,7 +134,7 @@ class CommandLineInterface
    end
 
    def destroy_all_schedules
-        Schedule.destroy_all
+      Schedule.destroy_all
    end
 
    def update_schedule(current_user)
