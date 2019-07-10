@@ -34,9 +34,14 @@ class CommandLineInterface
   :resolution => "high"
   end
 
-  def greet_user
+#   def play_dead
+#     afplay 'bin/Grateful Dead - The Music Never Stopped.mp3' 
+#   end
 
-    # print_image
+  def greet_user
+    pid = fork{ exec 'afplay', 'bin/GratefulDead-TheMusicNeverStopped.mp3' } 
+    print_image
+    
 
     puts "
          +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+
@@ -124,10 +129,11 @@ class CommandLineInterface
             end
           end
         end
-        @prompt.select('Would you like to return to the menu?') do |menu|
-            menu.choice 'Actually, let me go back...'.colorize(:blue), -> { menu_choices(current_user) }
-            menu.choice 'Rock on!'.colorize(:magenta), -> { print_image }
+        @prompt.select('How is it lookin?') do |menu|
+            menu.choice "Actually, let me go back...".colorize(:blue), -> { menu_choices(current_user) }
+            menu.choice "Rock on!".colorize(:magenta), -> { print_image }
         end
+        pid = fork{ exec 'killall', 'afplay' }
     end
 
 
@@ -184,7 +190,7 @@ class CommandLineInterface
      end
    end
 
-
+   
 
 end
 

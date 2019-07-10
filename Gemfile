@@ -10,3 +10,4 @@ gem "tty-prompt"
 gem "colorize"
 gem "rmagick"
 gem "catpix"
+
