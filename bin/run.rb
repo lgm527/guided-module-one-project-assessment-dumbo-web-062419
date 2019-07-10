@@ -36,7 +36,7 @@ class CommandLineInterface
 
   def greet_user
 
-    print_image
+    # print_image
 
     puts "
          +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+
@@ -44,7 +44,8 @@ class CommandLineInterface
          +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+".colorize(:blue).blink
 
 
-    puts 'Welcome to Bamchellaroo Man!'
+    puts '
+          Welcome to Bamchellaroo Man!'
     @prompt.select("Is this your first festival?") do |menu|
         menu.choice 'yup, let me create a new user', -> { create_user }
         menu.choice 'hell no, use my existing account', -> { select_existing_user }
@@ -67,9 +68,9 @@ class CommandLineInterface
 
     def menu_choices(current_user)
         @prompt.select("What would you like to do?") do |menu|
-            menu.choice 'create new schedule', ->{ scheduler(current_user, set_time=1)}
-            menu.choice 'view an existing schedule', -> { view_schedule(current_user)}
-            menu.choice 'update a schedule'
+            menu.choice 'create new schedule', ->{ scheduler(current_user, set_time=1) }
+            menu.choice 'view an existing schedule', -> { view_schedule(current_user) }
+            menu.choice 'update a schedule', -> { update_schedule(current_user) }
             menu.choice 'delete a schedule', -> { remove_schedule(current_user) }
         end
     end
@@ -102,12 +103,14 @@ class CommandLineInterface
     end
 
     def view_schedule(current_user)
-        puts "------------------------------"
+        puts "
+               Here's what you got so far:"
+        puts "------------------------------------------------------------"
         get_user_show_ids(current_user).each do |id|
           Show.all.map do |show|
             if show.id == id
               puts "#{show.artist} at #{show.time}"
-              puts "------------------------------"
+              puts "------------------------------------------------------------"
             end
           end
         end
@@ -128,7 +131,10 @@ class CommandLineInterface
          end
        end
      end
-     to_be_removed = @prompt.select("Having second thoughts? Please select a show you would like to ditch:", show_choices)
+     to_be_removed = @prompt.select("Please select a show you would like to ditch:", show_choices, "Eh, nevermind")
+      if to_be_removed == "Eh, nevermind"
+        
+      end
      show_to_remove = Show.find_by(artist: to_be_removed)
      Schedule.where(user_id: current_user, show_id: show_to_remove.id).destroy_all
    end
@@ -138,6 +144,16 @@ class CommandLineInterface
    end
 
    def update_schedule(current_user)
+     show_ids = get_user_show_ids(current_user)
+     show_choices = []
+     show_ids.each do |id|
+       Show.all.map do |show|
+         if show.id == id
+           show_choices << show.artist
+         end
+       end
+     end
+     to_be_edited = @prompt.select("Having second thoughts? Please select what you would like to change:")
 
    end
 
