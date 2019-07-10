@@ -149,14 +149,17 @@ class CommandLineInterface
      end
      to_be_removed = @prompt.select("Please select a show you would like to ditch:", show_choices, "Eh, nevermind")
       if to_be_removed == "Eh, nevermind"
-        
+        view_schedule(current_user)
+      else
+        show_to_remove = Show.find_by(artist: to_be_removed)
+        Schedule.where(user_id: current_user, show_id: show_to_remove.id).destroy_all
+        puts "Alright, goodbye #{to_be_removed}"
+        view_schedule(current_user)
       end
-     show_to_remove = Show.find_by(artist: to_be_removed)
-     Schedule.where(user_id: current_user, show_id: show_to_remove.id).destroy_all
    end
 
    def destroy_all_schedules
-        Schedule.destroy_all
+      Schedule.destroy_all
    end
 
    def update_schedule(current_user)
@@ -169,8 +172,22 @@ class CommandLineInterface
          end
        end
      end
-     to_be_edited = @prompt.select("Having second thoughts? Please select what you would like to change:")
-
+     to_be_edited = @prompt.select("Having second thoughts? Please select what you would like to change:", show_choices, "Eh, nevermind")
+     if to_be_edited == "Eh, nevermind"
+       view_schedule(current_user)
+     else
+       show_to_remove = Show.find_by(artist: to_be_edited)
+       set_time = show_to_remove.time
+       Schedule.where(user_id: current_user, show_id: show_to_remove.id).destroy_all
+       puts "Alright, that show is gone. Now time to find another show to replace it!"
+       show_choices = Show.all.where(time: set_time)
+       artist_names = show_choices.map{|show| show.artist}
+       artist_choice = @prompt.select("Who are you excited to see today?", artist_names)
+       chosen_show = Show.find_by(artist: artist_choice)
+       Schedule.create(user_id: current_user.id, show_id: chosen_show.id)
+       puts "Rock on!"
+       print_image
+     end
    end
 
    
