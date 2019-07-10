@@ -133,7 +133,7 @@ class CommandLineInterface
      end
      to_be_removed = @prompt.select("Please select a show you would like to ditch:", show_choices, "Eh, nevermind")
       if to_be_removed == "Eh, nevermind"
-        
+        view_schedule(current_user)
       end
      show_to_remove = Show.find_by(artist: to_be_removed)
      Schedule.where(user_id: current_user, show_id: show_to_remove.id).destroy_all
@@ -153,8 +153,8 @@ class CommandLineInterface
          end
        end
      end
-     to_be_edited = @prompt.select("Having second thoughts? Please select what you would like to change:")
-
+     to_be_edited = @prompt.select("Having second thoughts? Please select what you would like to change:", show_choices)
+     
    end
 
 
