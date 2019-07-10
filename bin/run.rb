@@ -25,18 +25,18 @@ class CommandLineInterface
 
   def print_image
     Catpix::print_image "bin/Umphreys.jpg",
-    :limit_x => 1.0,
-    :limit_y => 0,
-    :center_x => true,
-    :center_y => true,
-    :bg => "white",
-    :bg_fill => true,
-    :resolution => "high"
+  :limit_x => 1.0,
+  :limit_y => 0,
+  :center_x => true,
+  :center_y => true,
+  :bg => "white",
+  :bg_fill => true,
+  :resolution => "high"
   end
 
   def greet_user
 
-    print_image
+    # print_image
 
     puts "
          +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+
@@ -60,12 +60,13 @@ class CommandLineInterface
 
     def create_user
         user_login = @prompt.ask('What is your name?')
-        @current_user = User.create(name: "#{user_login}")
+        @current_user = User.new(name: "#{user_login}")
         puts "Welcome to the party #{user_login}!"
         menu_choices(@current_user)
     end
 
     def menu_choices(current_user)
+        # binding.pry
         @prompt.select("What would you like to do?") do |menu|
             menu.choice 'create new schedule', ->{ scheduler(current_user, set_time=1)}
             menu.choice 'view an existing schedule', -> { view_schedule(current_user)}
@@ -73,20 +74,29 @@ class CommandLineInterface
             menu.choice 'delete a schedule', -> { remove_schedule(current_user) }
         end
     end
-# add a "skip"
+
     def scheduler(current_user, set_time)
         if set_time == 11
             pick_headliner(current_user)
         else
             show_choices = Show.all.where(time: set_time)
             artist_names = show_choices.map{|show| show.artist}
-            artist_choice = @prompt.select("Who are you excited to see today?", artist_names)
+            artist_choice = @prompt.select("Who are you excited to see today?", artist_names, 'skip')
+                if artist_choice == 'skip'
+                    skip(current_user, set_time)
+                end
             chosen_show = Show.find_by(artist: artist_choice)
             Schedule.create(user_id: current_user.id, show_id: chosen_show.id)
             set_time+=1
             scheduler(current_user, set_time)
         end
     end
+
+    def skip(current_user, set_time)
+        set_time+=1
+        scheduler(current_user, set_time)
+    end
+
 
     def pick_headliner(current_user)
         main_choices = Show.all.where(time: 11)
@@ -111,10 +121,13 @@ class CommandLineInterface
             end
           end
         end
-        @prompt.select("How is it lookin?") do |menu|
-            menu.choice "Actually, let me go back...".colorize(:blue), -> { menu_choices(current_user) }
-            menu.choice "Rock on!".colorize(:magenta), -> { print_image }
+        @prompt.select('Would you like to return to the menu?') do |menu|
+            menu.choice 'Actually I changed my mind...', -> { menu_choices(current_user) }
+            menu.choice 'Looks great!'
+    
+        
         end
+
     end
 
 
@@ -134,7 +147,7 @@ class CommandLineInterface
    end
 
    def destroy_all_schedules
-      Schedule.destroy_all
+        Schedule.destroy_all
    end
 
    def update_schedule(current_user)
