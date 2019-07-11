@@ -25,23 +25,23 @@ class CommandLineInterface
 
   def print_image
     Catpix::print_image "bin/Umphreys.jpg",
-  :limit_x => 1.0,
-  :limit_y => 0,
-  :center_x => true,
-  :center_y => true,
-  :bg => "white",
-  :bg_fill => true,
-  :resolution => "high"
+    :limit_x => 1.0,
+    :limit_y => 0,
+    :center_x => true,
+    :center_y => true,
+    :bg => "white",
+    :bg_fill => true,
+    :resolution => "high"
   end
 
 #   def play_dead
-#     afplay 'bin/Grateful Dead - The Music Never Stopped.mp3' 
+#     afplay 'bin/Grateful Dead - The Music Never Stopped.mp3'
 #   end
 
   def greet_user
-    pid = fork{ exec 'afplay', 'bin/GratefulDead-TheMusicNeverStopped.mp3' } 
+    pid = fork{ exec 'afplay', 'bin/GratefulDead-TheMusicNeverStopped.mp3' }
     print_image
-    
+
 
     puts "
          +-+-+-+-+-+-+-+-+-+-+-+-+ +-+-+-+
@@ -190,7 +190,7 @@ class CommandLineInterface
      end
    end
 
-   
+
 
 end
 
