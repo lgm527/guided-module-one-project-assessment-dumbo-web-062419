@@ -66,13 +66,12 @@ class CommandLineInterface
 
     def create_user
         user_login = @prompt.ask('What is your name?')
-        @current_user = User.new(name: "#{user_login}")
+        @current_user = User.create(name: "#{user_login}")
         puts "Welcome to the party #{user_login}!"
         menu_choices(@current_user)
     end
 
     def menu_choices(current_user)
-        # binding.pry
         @prompt.select("What would you like to do?") do |menu|
             menu.choice 'create new schedule', ->{ scheduler(current_user, set_time=1) }
             menu.choice 'view an existing schedule', -> { view_schedule(current_user) }
